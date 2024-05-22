@@ -10,7 +10,7 @@ type CartItemProps ={
     removeHandler: (id: string) => void;
 };
 
-const CartItem = ({
+const CartItemCard = ({
     cartItem,
     incrementHandler,
     decrementHandler,
@@ -42,4 +42,4 @@ const CartItem = ({
   )
 }
 
-export default CartItem
+export default CartItemCard
