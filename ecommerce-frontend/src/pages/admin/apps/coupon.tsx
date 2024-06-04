@@ -30,7 +30,7 @@ const Coupon = () => {
       state.userReducer
     );
 
-  const submitHandler = (e: FormEvent<HTMLFormElement>) => {
+  const submitHandler = async(e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!includeNumbers && !includeCharacters && !includeSymbols)
