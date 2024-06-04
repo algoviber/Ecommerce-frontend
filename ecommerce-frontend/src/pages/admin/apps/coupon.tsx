@@ -1,5 +1,9 @@
 import { FormEvent, useEffect, useState } from "react";
 import AdminSidebar from "../../../components/admin/AdminSidebar";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import { UserReducerInitialState } from "../../../types/reducer-types";
+import toast from "react-hot-toast";
 
 const allLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 const allNumbers = "1234567890";
@@ -12,6 +16,7 @@ const Coupon = () => {
   const [includeCharacters, setIncludeCharacters] = useState<boolean>(false);
   const [includeSymbols, setIncludeSymbols] = useState<boolean>(false);
   const [isCopied, setIsCopied] = useState<boolean>(false);
+  const [amount, setAmount] = useState<number>(0);
 
   const [coupon, setCoupon] = useState<string>("");
 
@@ -19,6 +24,11 @@ const Coupon = () => {
     await window.navigator.clipboard.writeText(coupon);
     setIsCopied(true);
   };
+
+  const {user} = useSelector(
+    (state:{userReducer:UserReducerInitialState}) => 
+      state.userReducer
+    );
 
   const submitHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -40,6 +50,16 @@ const Coupon = () => {
     }
 
     setCoupon(result);
+    const res = await axios({
+      url: `${import.meta.env.VITE_SERVER}/api/v1/payment/coupon/new?id=${user?._id}`,
+      method: "POST",
+      data: {
+        "coupon": result,
+        "amount": amount,
+      },
+  });
+
+  toast.success(res.data.message);
   };
 
   useEffect(() => {
@@ -94,6 +114,14 @@ const Coupon = () => {
               />
               <span>Symbols</span>
             </fieldset>
+
+            <input
+            className="amount-input"
+              type="number"
+              placeholder="Enter the Amount"
+              onChange={(e) => setAmount(Number(e.target.value))}
+            />
+            
             <button type="submit">Generate</button>
           </form>
 
